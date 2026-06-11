@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>报工修改日志 - MES管理系统</title>
+<link rel="stylesheet" href="../assets/base/index.css">
+<style>
+  /* Module page specific: full height, no sidebar offset */
+  html, body {
+    height: 100%;
+    background: #f0f2f5;
+  }
+  .module-content {
+    display: block !important;
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  /* ===== 工作台风格统计卡片 ===== */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+  }
+  .stat-card-top {
+    display: flex;
+    align-items: center;
+  }
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .stat-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+  .stat-icon.blue { background: #eff6ff; }
+  .stat-icon.blue svg { fill: #2563eb; }
+  .stat-icon.green { background: #f0fdf4; }
+  .stat-icon.green svg { fill: #22c55e; }
+  .stat-icon.purple { background: #faf5ff; }
+  .stat-icon.purple svg { fill: #9333ea; }
+  .stat-value-area {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a1a;
+    line-height: 1.1;
+  }
+  .stat-label {
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 500;
+  }
+
+  /* ===== 表格样式 ===== */
+  .table-container {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+  }
+  .table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+  }
+  .table-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+  .table-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .table-wrapper {
+    overflow-y: auto;
+    overflow-x: auto;
+    flex: 1;
+  }
+  table {
+    width: 100%;
+    min-width: max-content;
+    border-collapse: collapse;
+  }
+  th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+    background: #f8fafc;
+    border-bottom: 2px solid #e2e8f0;
+    white-space: nowrap;
+  }
+  th:first-child {
+    width: 52px;
+    min-width: 52px;
+    text-align: center;
+  }
+  td {
+    padding: 14px 16px;
+    font-size: 14px;
+    color: #475569;
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f0f7ff; }
+  tr:nth-child(odd) td { background: #fafbfc; }
+  tr:nth-child(odd):hover td { background: #f0f7ff; }
+
+  /* 操作类型标签 */
+  .op-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .op-badge.add { background: #dcfce7; color: #16a34a; }
+  .op-badge.edit { background: #fed7aa; color: #d97706; }
+  .op-badge.delete { background: #fee2e2; color: #ef4444; }
+
+  /* 工序标签 */
+  .process-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    background: #f0f4ff;
+    color: #4a7cf7;
+    white-space: nowrap;
+  }
+
+  /* 状态标签 */
+  .status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .status-badge.normal { background: #dcfce7; color: #16a34a; }
+  .status-badge.error { background: #fee2e2; color: #ef4444; }
+
+  /* 搜索/筛选框统一样式 */
+  .filter-input,
+  .table-actions input,
+  .table-actions select {
+    padding: 8px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1a1a1a;
+    background: #fff;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .filter-input:focus,
+  .table-actions input:focus,
+  .table-actions select:focus {
+    border-color: #2563eb;
+  }
+  .table-actions select {
+    min-width: 110px;
+    cursor: pointer;
+  }
+  .table-actions input {
+    width: 240px;
+  }
+
+  /* ===== 分页 ===== */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+    margin-top: 16px;
+    flex-shrink: 0;
+  }
+  .pagination-info {
+    font-size: 13px;
+    color: #64748b;
+  }
+  .pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .pagination-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #475569;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .pagination-btn:hover:not(:disabled) {
+    background: #dbeafe;
+    border-color: #2563eb;
+    color: #2563eb;
+  }
+  .pagination-btn.active {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #fff;
+  }
+  .pagination-btn:disabled {
+    color: #cbd5e1;
+    cursor: not-allowed;
+  }
+</style>
+</head>
+<body>
+<div class="module-content">
+
+  <!-- ====== 工作台风格统计卡片 ====== -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-card-top">
+        <div class="stat-icon blue">
+          <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+        </div>
+      </div>
+      <div class="stat-value-area">
+        <div class="stat-value" id="reportModifyTodayCount">0</div>
+        <div class="stat-label">今日修改</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-top">
+        <div class="stat-icon green">
+          <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+        </div>
+      </div>
+      <div class="stat-value-area">
+        <div class="stat-value" id="reportModifyWeekCount">0</div>
+        <div class="stat-label">本周修改</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-top">
+        <div class="stat-icon purple">
+          <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z"/></svg>
+        </div>
+      </div>
+      <div class="stat-value-area">
+        <div class="stat-value" id="reportModifyTotalCount">0</div>
+        <div class="stat-label">总记录数</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== 列表区域 ====== -->
+  <div class="table-container">
+    <div class="table-header">
+      <div class="table-title">报工修改日志</div>
+      <div class="table-actions">
+        <input type="text" id="logSearchInput" placeholder="搜索日志编号/操作人/内容..." oninput="searchReportLog()">
+        <select id="logOperationTypeFilter" onchange="searchReportLog()">
+          <option value="">全部操作</option>
+          <option value="新增">新增</option>
+          <option value="修改">修改</option>
+          <option value="删除">删除</option>
+        </select>
+        <select id="logProcessFilter" onchange="searchReportLog()">
+          <option value="">全部工序</option>
+          <option value="瓷检">瓷检</option>
+          <option value="来料检验">来料检验</option>
+          <option value="安装">安装</option>
+          <option value="装配">装配</option>
+        </select>
+      </div>
+    </div>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>日志编号</th>
+            <th>操作人</th>
+            <th>操作类型</th>
+            <th>工序</th>
+            <th>修改内容</th>
+            <th>IP地址</th>
+            <th>操作时间</th>
+            <th>状态</th>
+          </tr>
+        </thead>
+        <tbody id="logTableBody">
+          <!-- JS 动态渲染 -->
+        </tbody>
+      </table>
+    </div>
+    <div class="pagination" id="paginationContainer"></div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+<script src="../assets/base/data.js"></script>
+<script src="../assets/base/index.js"></script>
+
+<script src="../assets/log/data.js"></script>
+<script src="../assets/log/index.js"></script>
+<script>
+  // Initialize module on load
+  renderReportLogTable();
+</script>
+</body>
+</html>

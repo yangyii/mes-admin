@@ -1,0 +1,648 @@
+/* ========== Dashboard页面样式 ========== */
+
+/* ========== 1. 顶部筛选栏 ========== */
+.dashboard-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  flex-shrink: 0;
+}
+
+.filter-left {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-item label {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.filter-item select {
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1a1a1a;
+  background: #fff;
+  outline: none;
+  cursor: pointer;
+  min-width: 100px;
+  appearance: auto;
+}
+
+.filter-item select:focus {
+  border-color: #2563eb;
+}
+
+.filter-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.date-range-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+}
+
+.date-range-picker label {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.date-input {
+  padding: 6px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+  color: #1a1a1a;
+  background: #fff;
+  cursor: pointer;
+  min-width: 110px;
+  font-family: inherit;
+}
+
+.date-input:focus {
+  border-color: #2563eb;
+}
+
+.date-separator {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* ========== 2. 表格头部上方：统计卡片 + 图表 ========== */
+.dashboard-top-area {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 0;
+}
+
+/* 左侧统计卡片区 */
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+}
+
+/* 顶部行：图标 + 趋势 */
+.stat-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stat-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stat-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.stat-icon.blue {
+  background: #eff6ff;
+}
+
+.stat-icon.blue svg {
+  fill: #2563eb;
+}
+
+.stat-icon.green {
+  background: #f0fdf4;
+}
+
+.stat-icon.green svg {
+  fill: #22c55e;
+}
+
+.stat-icon.amber {
+  background: #fffbeb;
+}
+
+.stat-icon.amber svg {
+  fill: #d97706;
+}
+
+.stat-icon.purple {
+  background: #faf5ff;
+}
+
+.stat-icon.purple svg {
+  fill: #9333ea;
+}
+
+.stat-icon.red {
+  background: #fef2f2;
+}
+
+.stat-icon.red svg {
+  fill: #ef4444;
+}
+
+/* 数值区域 */
+.stat-value-area {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1.1;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* 趋势标签 */
+.stat-trend {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.stat-trend.up {
+  color: #16a34a;
+  background: #f0fdf4;
+}
+
+.stat-trend.down {
+  color: #dc2626;
+  background: #fef2f2;
+}
+
+.stat-trend.warning {
+  color: #d97706;
+  background: #fffbeb;
+}
+
+/* 右侧图表区 */
+.dashboard-charts {
+  flex: 1;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+
+.chart-tabs {
+  display: flex;
+  gap: 4px;
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: 10px;
+}
+
+.chart-tab {
+  padding: 8px 20px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.chart-tab:hover {
+  background: #e2e8f0;
+}
+
+.chart-tab.active {
+  background: #fff;
+  color: #2563eb;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.chart-time-dimension {
+  display: flex;
+  gap: 4px;
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: 10px;
+}
+
+.time-btn {
+  padding: 6px 16px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.time-btn:hover {
+  background: #e2e8f0;
+}
+
+.time-btn.active {
+  background: #fff;
+  color: #2563eb;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.chart-container {
+  flex: 1;
+  padding: 20px;
+  min-height: 300px;
+  position: relative;
+}
+
+/* ========== 3. 底部表格区 ========== */
+.dashboard-table {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: 24px;
+  flex-shrink: 0;
+}
+
+.dashboard-top-area {
+  margin-bottom: 20px;
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.table-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.table-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 400px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  background: #f8fafc;
+  border-bottom: 2px solid #e2e8f0;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+td {
+  padding: 16px;
+  font-size: 14px;
+  color: #475569;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* 条纹效果 */
+tr:nth-child(odd) td {
+  background: #fafbfc;
+}
+
+tr:hover td {
+  background: #f0f7ff;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-badge.normal {
+  background: #dcfce7;
+  color: #22c55e;
+}
+
+.status-badge.warning {
+  background: #fed7aa;
+  color: #f97316;
+}
+
+.status-badge.error {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.status-badge.info {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+/* 良率单元格样式 */
+.yield-cell {
+  font-weight: 600;
+}
+
+.yield-cell.high {
+  color: #22c55e;
+}
+
+.yield-cell.medium {
+  color: #f97316;
+}
+
+.yield-cell.low {
+  color: #ef4444;
+}
+
+/* 分页 */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 16px;
+}
+
+.pagination-info {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pagination-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #475569;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: #dbeafe;
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.pagination-btn.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+.pagination-btn:disabled {
+  color: #cbd5e1;
+  cursor: not-allowed;
+}
+
+/* ========== 弹窗样式 ========== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 16px;
+  width: 500px;
+  max-width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.modal-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #f1f5f9;
+  border-radius: 8px;
+  font-size: 18px;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.modal-close:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.detail-value {
+  font-size: 14px;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+/* ========== 响应式布局 ========== */
+@media (max-width: 1400px) {
+  #chartAchievement,
+  #chartYield {
+    height: 350px !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .dashboard-filter-bar {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .filter-left {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  
+  .filter-item {
+    flex: 1;
+    min-width: 150px;
+  }
+  
+  .filter-right {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .dashboard-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .module-content {
+    padding: 12px;
+    gap: 12px;
+  }
+  
+  .dashboard-filter-bar {
+    padding: 12px;
+  }
+  
+  .date-range-picker {
+    flex-wrap: wrap;
+  }
+  
+  .dashboard-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .chart-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .dashboard-table {
+    padding: 16px;
+  }
+
+  #chartAchievement,
+  #chartYield {
+    height: 250px !important;
+  }
+}

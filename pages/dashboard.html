@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>工作台 - MES管理系统</title>
+  <link rel="stylesheet" href="../assets/base/index.css">
+  <link rel="stylesheet" href="../assets/dashboard/index.css">
+  <style>
+    /* Module page specific: full height, no sidebar offset */
+    html, body {
+      height: 100%;
+      background: #f0f2f5;
+    }
+    .module-content {
+      display: flex !important;
+      flex-direction: column;
+      padding: 20px;
+      height: 100%;
+      overflow-y: auto;
+      gap: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="module-content">
+    
+    <!-- ========== 第一层：统计卡片模块 ========== -->
+    <div class="dashboard-stats">
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <div class="stat-icon blue">
+            <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+          </div>
+          <div class="stat-trend warning">+2</div>
+        </div>
+        <div class="stat-value-area">
+          <div class="stat-value" id="statPending">0</div>
+          <div class="stat-label">待完成</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <div class="stat-icon amber">
+            <svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+          </div>
+          <div class="stat-trend warning">+1</div>
+        </div>
+        <div class="stat-value-area">
+          <div class="stat-value" id="statInProgress">0</div>
+          <div class="stat-label">进行中</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <div class="stat-icon green">
+            <svg viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>
+          </div>
+          <div class="stat-trend up">+8</div>
+        </div>
+        <div class="stat-value-area">
+          <div class="stat-value" id="statCompleted">0</div>
+          <div class="stat-label">当日已完成</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <div class="stat-icon red">
+            <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+          </div>
+          <div class="stat-trend down">-3</div>
+        </div>
+        <div class="stat-value-area">
+          <div class="stat-value" id="statScrapped">0</div>
+          <div class="stat-label">当日报废</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 第二层：筛选栏 ========== -->
+    <div class="dashboard-filter-bar">
+      <div class="filter-left">
+        <div class="filter-item">
+          <label>订单号</label>
+          <select id="filterOrder">
+            <option value="">全部</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label>产品名称</label>
+          <select id="filterProduct">
+            <option value="">全部</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label>图号</label>
+          <select id="filterDrawing">
+            <option value="">全部</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label>工序</label>
+          <select id="filterProcess">
+            <option value="">全部</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-right">
+        <div class="date-range-picker">
+          <label>时间范围</label>
+          <input type="date" id="startDate" class="date-input">
+          <span class="date-separator">至</span>
+          <input type="date" id="endDate" class="date-input">
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 第三层：底部报工记录表格（含图表） ========== -->
+    <div class="dashboard-table">
+      
+      <!-- 图表区 -->
+      <div class="dashboard-top-area">
+        <!-- 右侧：图表区 -->
+        <div class="dashboard-charts">
+          <div class="chart-header">
+            <div class="chart-tabs">
+              <button class="chart-tab active" data-chart="achievement">达成率</button>
+              <button class="chart-tab" data-chart="yield">良率</button>
+            </div>
+            <div class="chart-time-dimension">
+              <button class="time-btn active" data-dimension="day">日</button>
+              <button class="time-btn" data-dimension="month">月</button>
+              <button class="time-btn" data-dimension="quarter">季</button>
+              <button class="time-btn" data-dimension="year">年</button>
+            </div>
+          </div>
+          <div class="chart-container">
+            <div id="chartAchievement" style="width:100%;height:400px;"></div>
+            <div id="chartYield" style="width:100%;height:400px;display:none;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-header">
+        <div class="table-title">报工记录</div>
+        <div class="table-actions">
+          <button class="btn btn-secondary" id="btnExport">导出</button>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>序号</th>
+              <th>订单号</th>
+              <th>产品名称</th>
+              <th>图号</th>
+              <th>工序</th>
+              <th>操作员</th>
+              <th>完成数量</th>
+              <th>报废数量</th>
+              <th>良率</th>
+              <th>状态</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <!-- 动态渲染 -->
+          </tbody>
+        </table>
+      </div>
+      <!-- 分页 -->
+      <div class="pagination">
+        <div class="pagination-info" id="paginationInfo">共 0 条</div>
+        <div class="pagination-controls" id="paginationControls">
+          <!-- 动态渲染 -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- 查看弹窗 -->
+  <div class="modal-overlay" id="viewModal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>报工详情</h3>
+        <button class="modal-close" id="btnCloseModal">×</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- 动态填充 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 基础数据源 -->
+  <script src="../assets/base/data.js"></script>
+
+  <!-- 基础逻辑 -->
+  <script src="../assets/base/index.js"></script>
+
+  <!-- ECharts CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  
+  <!-- 数据源 -->
+  <script src="../assets/dashboard/data.js"></script>
+  
+  <!-- 逻辑控制 -->
+  <script src="../assets/dashboard/index.js"></script>
+
+</body>
+</html>

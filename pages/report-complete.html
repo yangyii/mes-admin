@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>完工汇报 - MES管理系统</title>
+<link rel="stylesheet" href="../assets/base/index.css">
+<link rel="stylesheet" href="../assets/dashboard/index.css">
+<style>
+  /* Module page specific: full height, no sidebar offset */
+  html, body {
+    height: 100%;
+    background: #f0f2f5;
+  }
+  .module-content {
+    display: flex !important;
+    flex-direction: column;
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+    gap: 20px;
+  }
+  .dashboard-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+</style>
+</head>
+<body>
+<div class="module-content">
+
+        <div class="dashboard-stats">
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-icon green">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              </div>
+            </div>
+            <div class="stat-value-area">
+              <div class="stat-value" id="completeDoneCount">28</div>
+              <div class="stat-label">合格数量</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-icon red">
+                <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+              </div>
+            </div>
+            <div class="stat-value-area">
+              <div class="stat-value" id="completeIssueCount">2</div>
+              <div class="stat-label">报废数量</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-icon blue">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+              </div>
+            </div>
+            <div class="stat-value-area">
+              <div class="stat-value" id="completeTotalCount">35</div>
+              <div class="stat-label">总计</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div class="table-header">
+            <div class="table-title">报工记录</div>
+            <div class="table-actions">
+              <input type="text" id="completeSearchInput" placeholder="搜索报工ID/图号/工序..." oninput="searchCompleteData()" style="padding: 10px 16px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; margin-right: 12px; width: 280px; outline: none;">
+              <button class="btn btn-primary" onclick="addReport()" style="margin-right: 8px;">新增</button>
+              <button class="btn btn-secondary" onclick="exportReport()">导出</button>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:60px;min-width:60px;">序号</th>
+                  <th>报工ID</th>
+                  <th>图号</th>
+                  <th>工序</th>
+                  <th>报工数量</th>
+                  <th>合格数量</th>
+                  <th>报废数量</th>
+                  <th>良率</th>
+                  <th>关联计划</th>
+                  <th>操作员</th>
+                  <th>设备</th>
+                  <th>报工时间</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="completeTableBody"></tbody>
+            </table>
+          </div>
+          <!-- 分页 -->
+          <div class="pagination" id="completePagination">
+            <div class="pagination-info" id="completePaginationInfo">共 0 条</div>
+            <div class="pagination-controls" id="completePaginationControls">
+              <button class="pagination-btn" onclick="goToCompletePage(1)" id="completePageFirst" title="首页">&laquo;</button>
+              <button class="pagination-btn" onclick="goToCompletePage(completeCurrentPage-1)" id="completePagePrev" title="上一页">&lsaquo;</button>
+              <span id="completePageNumbers"></span>
+              <button class="pagination-btn" onclick="goToCompletePage(completeCurrentPage+1)" id="completePageNext" title="下一页">&rsaquo;</button>
+              <button class="pagination-btn" onclick="goToCompletePage(completeTotalPages)" id="completePageLast" title="末页">&raquo;</button>
+              <select class="pagination-size" id="completePageSize" onchange="changeCompletePageSize(this.value)">
+                <option value="10">10条/页</option>
+                <option value="20">20条/页</option>
+                <option value="50">50条/页</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      
+</div>
+
+
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="../assets/base/data.js"></script>
+<script src="../assets/base/index.js"></script>
+<script src="../assets/plan/data.js"></script>
+<script src="../assets/plan/index.js"></script>
+<script src="../assets/report-complete/data.js"></script>
+<script src="../assets/report-complete/index.js"></script>
+<script>
+  // Initialize module on load
+  renderCompleteTable();
+</script>
+</body>
+</html>
